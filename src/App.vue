@@ -2,6 +2,7 @@
   <v-app>
     <v-content>
       <Navigation />
+      <BackgroundDecor />
       <v-container>
         <router-view/>
       </v-container>
@@ -11,9 +12,11 @@
 
 <script>
 import Navigation from '@/components/Navigation.vue'
+import BackgroundDecor from '@/components/BackgroundDecor.vue'
 
     export default {
         components: {
+          BackgroundDecor,
           Navigation
         }
     }
@@ -23,7 +26,7 @@ import Navigation from '@/components/Navigation.vue'
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 @font-face {
   font-family: "Bon Vivant Serif Bold";
-  src: url("assets/fonts/BonVivantSerifBold.otf") format("otf");
+  src: url("./assets/fonts/BonVivantSerifBold.otf") format("opentype");
 }
 #app {
   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;

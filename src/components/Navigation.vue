@@ -18,6 +18,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    z-index: 9;
     img {
         height: 90%;
         width: auto;
