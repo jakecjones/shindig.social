@@ -1,17 +1,21 @@
 import Vue from 'vue'
-import Router from 'vue-router'
-import Form from '@/views/Form'
+import VueRouter from 'vue-router'
+import Form from '@/views/Form.vue'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-const router = new Router({
+  const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Form
+  }
+]
+
+const router = new VueRouter({
   mode: 'history',
-  routes: [
-    {
-      path: '/',
-      component: Form
-    }
-  ]
+  base: process.env.BASE_URL,
+  routes
 })
 
 export default router
