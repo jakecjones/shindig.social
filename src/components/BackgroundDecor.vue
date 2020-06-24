@@ -3,8 +3,8 @@
 
         <img class="ellipse" src="../assets/images/ellipse.svg" alt="shindig social ellipse">
         <img class="blob" src="../assets/images/blob.svg" alt="shindig social blob">
-        <img class="splatter" src="../assets/images/splatter.png" alt="shindig social blob">
-        <img class="splatter-2" src="../assets/images/splatter.png" alt="shindig social blob">
+        <img class="splatter" src="../assets/images/splatter.png" alt="shindig social splatter">
+        <img class="splatter-2" src="../assets/images/splatter.png" alt="shindig social splatter">
     </div>
 </template>
 

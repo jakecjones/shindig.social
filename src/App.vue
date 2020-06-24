@@ -22,6 +22,7 @@ import BackgroundDecor from '@/components/BackgroundDecor.vue'
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
+
 @font-face {
   font-family: "Bon Vivant Serif Bold";
   src: url("./assets/fonts/BonVivantSerifBold.otf") format("opentype");
@@ -32,17 +33,21 @@ import BackgroundDecor from '@/components/BackgroundDecor.vue'
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   background-color: #FBF9F8;
+  a {
+    text-decoration: unset;
+    color: unset;
+  }
 }
 
 #nav {
   padding: 30px;
 
   a {
-    font-weight: bold;
-    color: #2c3e50;
+    font-weight: unset;
+    color: unset;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: unset;
     }
   }
 }

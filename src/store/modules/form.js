@@ -18,9 +18,9 @@ const actions = {
         context;
         const createdAt = new Date();
         
-        db.collection("submissions").add(payload)
+        db.collection("mail").add(payload)
         .then((docRef) => {
-          return db.collection("submissions").doc(docRef.id)
+          return db.collection("mail").doc(docRef.id)
             .update({
                 id: docRef.id,
                 createdAt: createdAt

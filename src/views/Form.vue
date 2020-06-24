@@ -65,7 +65,19 @@
         </v-btn>
         </v-col>
       </v-row>
-
+      <v-row >
+        <v-spacer></v-spacer>
+        <div class="insta-link">
+          <a href="https://www.instagram.com/shindigsocial" target="_blank">
+            <img src="../assets/images/LGS.png" alt="shindig social instagram">
+          </a>
+        </div>
+      </v-row>
+      <div class="insta-link-desktop">
+        <a href="https://www.instagram.com/shindigsocial" target="_blank">
+          <img src="../assets/images/LGS-Desktop.png" alt="shindig social instagram">
+        </a>
+      </div>
       <ThankYou :closeCallback="close" :user="form" v-if="isFormSubmitted" />
     </div>
 </template>
@@ -79,7 +91,7 @@ import { email, required } from 'vuelidate/lib/validators';
         data() {
             return {
                 isFormSubmitted: false,
-                items: ['Installations', 'Collab', 'Other'],
+                items: ['Installations', 'Event Design', 'Styled Shoot', 'Collab', 'Other'],
                 isSubmitting: false,
                 form: {
                   name: '',
@@ -87,7 +99,7 @@ import { email, required } from 'vuelidate/lib/validators';
                   email: '',
                   phoneNumber: '',
                   services: [],
-                  message: ''
+                  message: '',
                 }
             }
         },
@@ -128,7 +140,19 @@ import { email, required } from 'vuelidate/lib/validators';
             if (this.$v.$pending || this.$v.$error) return;
 
             this.isSubmitting = true;
-            await this.$store.dispatch("CREATE_SUBMISSION", this.form);
+            const message = {
+              to: ['hello@shindig.social'],
+              message: {
+                subject: 'Website Inquiry',
+                text: `name: ${this.form.name} 
+                \nemail: ${this.form.email}  
+                \nbusiness name: ${this.form.businessName} 
+                \nphone number: ${this.form.phoneNumber}
+                \nservices: ${this.form.services}
+                \nmessage: ${this.form.message}`
+              }
+            }
+            await this.$store.dispatch("CREATE_SUBMISSION", message);
             setTimeout(() => { 
               this.isSubmitting = false;
               this.isFormSubmitted = true;
@@ -143,6 +167,8 @@ import { email, required } from 'vuelidate/lib/validators';
 </script>
 
 <style lang="scss" scoped>
+$break-small: 900px;
+
     .form {
         width: 80%;
         max-width: 350px;
@@ -155,16 +181,51 @@ import { email, required } from 'vuelidate/lib/validators';
         &__submit {
             border-radius: 0;
             color: #fff;
-            font-family: 'BonVivantSerifBold', serif;
+            font-family: 'Bon Vivant Serif Bold', serif;
             letter-spacing: 5px;
             width: 180px;
             height: 40px !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 1px !important;
+            padding-top: 3px !important;
             margin: 1em auto;
             font-size: 16px;
+        }
+
+        .insta-link {
+          display: none;
+        }
+        .insta-link-desktop {
+          display: block;
+          position: relative;
+          width: 100%;
+          z-index: 0;
+          position: fixed;
+          right: 10px;
+          top: 0;
+          text-align: right;
+          margin-top: 20%;
+          width: 60px;
+          cursor: pointer;
+          img {
+            width: 60px
+          }
+        }
+        @media screen and (max-width: $break-small) {
+          .insta-link-desktop {
+            display: none;
+          }
+          .insta-link {
+            cursor: pointer;
+            display: block;
+            position: relative;
+            width: 200px;
+            height: auto;
+            img {
+              width: 100%;
+            }
+          }
         }
     }
 </style>
@@ -184,8 +245,13 @@ import { email, required } from 'vuelidate/lib/validators';
             }
         }
         .v-menu__content {
-            box-shadow: unset;
-            border: 1px solid #DDBFB3;
+            box-shadow: 1px 1px 10px rgba(221, 191, 179, 0.3);
         }
+.v-list-item, .v-list-item--link {
+  &:hover {
+    background-color: #fcf1ed;
+    color: #fff !important;
+  }
+}
 
 </style>

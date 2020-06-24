@@ -9,6 +9,15 @@
                     <div class="overlay__text">
                         {{user.name}}, we will get back to you very soon.
                     </div>
+                    <a href="https://www.instagram.com/shindigsocial" target="_blank">
+                        <v-row>
+                            <v-col class="overlay__link">
+                                Check out our instagram
+                                <img class="insta-logo ml-4" src="../assets/images/instagram.svg">
+                            </v-col> 
+                        </v-row>
+                    </a>
+
                 </v-col>
         </div>
     </div>
@@ -65,12 +74,12 @@
             cursor: pointer;
         }
         &__content {
-            margin-top: 200px;
+            margin-top: 180px;
         }
         &__name {
             color: #000;
             font-size: 22px;
-            font-family: 'BonVivantSerifBold', serif;
+            font-family: 'Bon Vivant Serif Bold', serif;
             letter-spacing: 5px;
             text-transform: uppercase;
             padding-bottom: 2em;
@@ -81,11 +90,25 @@
         &__text {
             color: #000;
             font-size: 18px;
-            font-family: 'BonVivantSerifBold', serif;
+            font-family: 'Bon Vivant Serif Bold', serif;
             letter-spacing: 3px;
             padding-top: 2em;
             max-width: 350px;
             margin: 0 auto;
+        }
+        &__link {
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 3em auto;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .insta-logo {
+            width: 20px;
+            margin-top: -1px;
         }
     }
     .overlay-active {
