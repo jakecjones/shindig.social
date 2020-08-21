@@ -29,12 +29,12 @@
     }
     .blob {
         position: fixed;
-        bottom: 0;
+        bottom: -20px;
         right: 0;
     }
     .splatter {
         position: fixed;
-        bottom: 30px;
+        bottom: 10px;
         right: 0;
         width: 180px;
         mix-blend-mode: color-dodge;

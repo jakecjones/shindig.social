@@ -1,14 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Form from '@/views/Form.vue'
+import Navigation from '@/views/Navigation.vue'
 
 Vue.use(VueRouter)
 
   const routes = [
   {
-    path: '/',
+    path: '/contact',
     name: 'Home',
     component: Form
+  },
+  {
+    path: '/',
+    name: 'navigation',
+    component: Navigation
   }
 ]
 

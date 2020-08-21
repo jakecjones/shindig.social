@@ -1,5 +1,11 @@
 <template>
-    <div class="form">
+    <div class="contact">
+      <div class="page-title">
+        <div class="page-title__text primary-text uppercase lp-5">
+          <span class="page-title__number">01</span>Work With Us
+        </div>
+      </div>
+      <div class="form">
       <v-row class="d-flex justify-center align-center">
         <v-col cols="12">
           <v-text-field
@@ -79,6 +85,7 @@
         </a>
       </div>
       <ThankYou :closeCallback="close" :user="form" v-if="isFormSubmitted" />
+      </div>
     </div>
 </template>
 
