@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Admin from '@/views/admin/Admin.vue'
+import EditProduct from '@/views/admin/EditProduct.vue'
 import Form from '@/views/Form.vue'
 import Navigation from '@/views/Navigation.vue'
 
@@ -15,6 +17,22 @@ Vue.use(VueRouter)
     path: '/',
     name: 'navigation',
     component: Navigation
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: Admin,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/admin/product/:id',
+    name: 'product',
+    component: EditProduct,
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 
