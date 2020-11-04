@@ -50,44 +50,32 @@
                             </v-col>
                         </v-row>
                     </v-card>
+
                     <v-card class="pa-5 info-card" flat>
                         <v-row>
-                            <v-file-input
-                            label="Select Images"
-                            v-model="images" 
-                            @change="addImages"
-                            multiple 
-                            accept="image/png, image/jpeg"
-                            >
-
-                            </v-file-input>
-                        </v-row>
-                        <v-row >
-                            <v-col cols="3" v-for="(image, index) in imagesSource" :key="index">
-                                <v-img :src="image.src"></v-img>
+                            <v-spacer></v-spacer>
+                            <v-col class="d-flex justify-end">
+                                <v-btn @click="addImageDialog = true" color="primary" depressed>select image</v-btn>
                             </v-col>
                         </v-row>
-                    </v-card>
-                    <v-card class="pa-5 info-card" flat>
                         <draggable
                         v-model="orderedImages"
                         v-bind="dragOptions"
                         @start="drag = true"
                         @end="drag = false"
-                        @change="log"
                         >
                             <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                                <v-row v-for="(image, index) in orderedImages" :key="index">
-                                    <v-col cols="4">
-                                        <v-img :src="image.url"></v-img>
+                                <v-row class="mb-10" v-for="(image, index) in orderedImages" :key="index">
+                                    <v-col class="d-flex align-center justify-center" cols="4">
+                                        <v-img :src="image.data.url"></v-img>
                                     </v-col>
-                                    <v-col cols="2">
+                                    <v-col class="d-flex align-center justify-center" cols="2">
                                         <v-switch
                                         v-model="image.active"
                                         label="Visible"
                                         ></v-switch>
                                     </v-col>
-                                    <v-col cols="6">
+                                    <v-col class="d-flex align-center justify-center" cols="6">
                                         <v-text-field
                                         v-model="image.alt"
                                         label="Image Description"
@@ -101,6 +89,28 @@
                 </div>
             </div>
         </div>
+        <v-dialog width="700px" v-model="addImageDialog">
+            <v-card class="pa-5">
+                <v-row>
+                    <v-col 
+                    class="d-flex align-center justify-center pa-1 ma-1"
+                    :class="{'selected' : image.active}"
+                    v-for="(image, index) in selectedImages" 
+                    :key="index" 
+                    cols="3"
+                    @click="selectImage(image, index)"
+                    >
+                        <v-img :src="image.data.url"></v-img>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-spacer></v-spacer>
+                    <v-col class="d-flex justify-end">
+                        <v-btn @click="addSelectedImages" color="primary" depressed>add</v-btn>
+                    </v-col>
+                </v-row>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -112,6 +122,7 @@ import clonedeep from 'lodash.clonedeep';
     export default {
         data() {
             return {
+                selected: true,
                 createNew: false,
                 product: {},
                 productImages: [],
@@ -119,6 +130,8 @@ import clonedeep from 'lodash.clonedeep';
                 imagesSource: [],
                 drag: false,
                 orderedImages: [],
+                addImageDialog: false,
+                selectedImages: [],
                 headers: [
                     {
                         text: 'Visible',
@@ -150,6 +163,7 @@ import clonedeep from 'lodash.clonedeep';
         watch: {
             allImages(images){
                 this.fetchOrderedImages(images);
+                this.fetchSelectedImages(images);
             }
         },
         async created (){
@@ -165,22 +179,64 @@ import clonedeep from 'lodash.clonedeep';
         },
         methods: {
             async save() {
+                let formattedImages = this.orderedImages.map((element) => {
+                    return {
+                        active: element.active ? element.active : '',
+                        alt: element.alt ? element.alt : '',
+                        id: element.id ? element.id : ''
+                    }
+                })
+
+                this.product.images = formattedImages;
                 await this.$store.dispatch('UPDATE_PRODUCT', this.product);
-                this.upload();
             },
-            log(val){
-                console.log(val)
+            selectImage (item, index) {
+                this.selectedImages[index].active = !this.selectedImages[index].active;
+            },
+            async addSelectedImages () {
+                let temporayImages = clonedeep(this.orderedImages);
+
+                this.selectedImages.forEach(element => {
+                    if (element.active) {
+                        let newImage = {
+                            alt: '',
+                            active: false,
+                            id: element.data.id
+                        }
+                        temporayImages.push(newImage);
+                    }
+                });
+                this.product.images = temporayImages;
+                await this.$store.dispatch('UPDATE_PRODUCT', this.product);
+                this.fetchOrderedImages(this.allImages);
+                this.fetchSelectedImages(this.allImages);
+                this.addImageDialog = false;
             },
             async fetchOrderedImages(images){
                 this.orderedImages = [];
-                
                 this.product.images.forEach(element => {
-                    let newImage = images.find(findImage => element.id === findImage.id);
-                    if (newImage) {
+                    let newImage = {
+                        alt: element.alt,
+                        active: element.active,
+                        data: images.find(findImage => element.id === findImage.id),
+                        id: element.id
+                    }
+                    if (newImage && newImage.data) {
                         this.orderedImages.push(newImage);
                     }
                 });
-
+            },
+            async fetchSelectedImages(images){
+                this.selectedImages = [];
+                images.forEach(element => {
+                    let newImage = {
+                        active: false,
+                        data: images.find(findImage => element.id === findImage.id),
+                    }
+                    if (newImage && newImage.data) {
+                        this.selectedImages.push(newImage);
+                    }
+                });
             },
             navigateTo(product){
                 this.$router.push({
@@ -247,6 +303,13 @@ import clonedeep from 'lodash.clonedeep';
 </script>
 
 <style lang="scss" scoped>
+.selected {
+    border: 1px solid #333;
+    background-color: #fafafa;
+}
+.ghost {
+    opacity: 0;
+}
 .admin {
     position: absolute;
     top: 0;

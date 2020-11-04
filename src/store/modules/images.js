@@ -62,14 +62,12 @@ const actions = {
   },
   async ADD_IMAGES(context, payload) {
     context;
-    payload.images.forEach((image, index) => {
+    payload.images.forEach((image) => {
         const newImage = {};
         newImage.createdAt = new Date();
         newImage.name = image.name;
         newImage.size = image.size;
         newImage.type = image.type;
-        newImage.active = payload.imageData[index].active;
-        newImage.alt = payload.imageData[index].alt;
 
       db.collection("images")
         .add(newImage)
