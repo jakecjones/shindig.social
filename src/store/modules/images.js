@@ -13,27 +13,107 @@ if (!firebase.apps.length) {
 Vue.use(firebase);
 const db = firebase.firestore();
 
+const state = {
+  allImages: []
+};
+
+const getters = {
+  allImages: (state) => state.allImages
+};
+
+const mutations = {
+  loadImages(state, payload) {
+      state.allImages = payload;
+  }
+}
+
 const actions = {
-    LOAD_IMAGES(context, payload) {
-        db.collection("images").where("productId", "==", payload.id)
+    async LOAD_IMAGES(context, id) {
+        let images = [];
+        try {
+            images = await context.dispatch('FETCH_IMAGES', id);
+        } catch (error) {
+            console.log(error);
+        }
+
+        return images;
+
+    },
+    FETCH_IMAGES(context, id){
+        let images = [];
+        db.collection("images").where("productId", "==", id)
         .onSnapshot(function(querySnapshot) {
-            const images = []
             querySnapshot.forEach(function(doc) {
                 images.push(doc.data())
             });
-            return images;
-        });
+        }); 
+
+        return images;
     },
-    async ADD_IMAGES(context, payload) {
+    FETCH_ALL_IMAGES(context){
+      db.collection("images")
+      .onSnapshot(function(querySnapshot) {
+        let images = [];
+        querySnapshot.forEach(function(doc) {
+            images.push(doc.data())
+        });
+        context.commit('loadImages', images);
+      });
+  },
+  async ADD_IMAGES(context, payload) {
+    context;
+    payload.images.forEach((image, index) => {
+        const newImage = {};
+        newImage.createdAt = new Date();
+        newImage.name = image.name;
+        newImage.size = image.size;
+        newImage.type = image.type;
+        newImage.active = payload.imageData[index].active;
+        newImage.alt = payload.imageData[index].alt;
+
+      db.collection("images")
+        .add(newImage)
+        .then((docRef) => {
+          db.collection("images")
+            .doc(docRef.id)
+            .update({
+              id: docRef.id,
+            });
+
+          const fileRef = `/images/${newImage.name}`;
+
+          firebase
+            .storage()
+            .ref(fileRef)
+            .put(image)
+            .then(() => {
+              firebase
+                .storage()
+                .ref(fileRef)
+                .getDownloadURL()
+                .then((url) => {
+                  db.collection("images")
+                    .doc(docRef.id)
+                    .update({
+                      url: url,
+                    });
+                });
+            });
+        });
+    });
+  },
+    async ADD_PRODUCT_IMAGES(context, payload) {
         context;
-        payload.images.forEach(image => {
+        payload.images.forEach((image, index) => {
             const newImage = {};
             newImage.createdAt = new Date();
             newImage.name = image.name;
             newImage.size = image.size;
             newImage.type = image.type;
             newImage.productId = payload.id;
-    
+            newImage.active = payload.imageData[index].active;
+            newImage.alt = payload.imageData[index].alt;
+
           db.collection("images")
             .add(newImage)
             .then((docRef) => {
@@ -43,9 +123,7 @@ const actions = {
                   id: docRef.id,
                 });
     
-              const fileRef = `/images/${payload.id}/${
-                docRef.id
-              }.${newImage.name.split(".").pop()}`;
+              const fileRef = `/images/${payload.id}/${newImage.name}`;
     
               firebase
                 .storage()
@@ -74,8 +152,8 @@ const actions = {
 
 export const images = {
     state,
+    getters,
     mutations,
-    actions,
-    getters
+    actions
 }
 

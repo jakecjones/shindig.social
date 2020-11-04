@@ -16,12 +16,6 @@
                 <div class="content-container__overflow">
                     <div class="info-card info-row" flat>
                         <v-row class="d-flex">
-                            <v-col class="d-flex justify-start">
-                                <v-switch
-                                v-model="product.active"
-                                label="Visible"
-                                ></v-switch>
-                            </v-col>
                             <v-spacer></v-spacer>
                             <v-col class="d-flex justify-end">
                                 <v-btn @click="save" color="primary" depressed>
@@ -30,26 +24,6 @@
                             </v-col>
                         </v-row>
                     </div>
-                    <v-card class="pa-5 info-card" flat>
-                        <v-row>
-                            <v-col>
-                                <v-text-field
-                                v-model="product.name"
-                                label="Title"
-                                >
-                                </v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-textarea
-                                v-model="product.description"
-                                label="Overview"
-                                >
-                                </v-textarea>
-                            </v-col>
-                        </v-row>
-                    </v-card>
                     <v-card class="pa-5 info-card" flat>
                         <v-row>
                             <v-file-input
@@ -69,34 +43,11 @@
                         </v-row>
                     </v-card>
                     <v-card class="pa-5 info-card" flat>
-                        <draggable
-                        v-model="orderedImages"
-                        v-bind="dragOptions"
-                        @start="drag = true"
-                        @end="drag = false"
-                        @change="log"
-                        >
-                            <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                                <v-row v-for="(image, index) in orderedImages" :key="index">
-                                    <v-col cols="4">
-                                        <v-img :src="image.url"></v-img>
-                                    </v-col>
-                                    <v-col cols="2">
-                                        <v-switch
-                                        v-model="image.active"
-                                        label="Visible"
-                                        ></v-switch>
-                                    </v-col>
-                                    <v-col cols="6">
-                                        <v-text-field
-                                        v-model="image.alt"
-                                        label="Image Description"
-                                        >
-                                        </v-text-field>
-                                    </v-col>
-                                </v-row>
-                            </transition-group>
-                        </draggable>
+                        <v-row>
+                            <v-col cols="3" class="d-flex justify-center align-center" v-for="(image, index) in orderedImages" :key="index">
+                                <v-img width="90%" :src="image.url"></v-img>
+                            </v-col>
+                        </v-row>
                     </v-card>
                 </div>
             </div>
@@ -105,20 +56,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import draggable from 'vuedraggable';
 import clonedeep from 'lodash.clonedeep';
+import { mapGetters } from 'vuex';
+import orderBy from 'lodash.orderby';
 
     export default {
         data() {
             return {
                 createNew: false,
                 product: {},
-                productImages: [],
                 images: [],
                 imagesSource: [],
                 drag: false,
-                orderedImages: [],
                 headers: [
                     {
                         text: 'Visible',
@@ -147,56 +96,33 @@ import clonedeep from 'lodash.clonedeep';
                 ]
             }
         },
-        watch: {
-            allImages(images){
-                this.fetchOrderedImages(images);
-            }
-        },
         async created (){
             try {
-                this.product = await this.$store.dispatch('LOAD_PRODUCT', this.$route.params.id);
-                this.productImages = await this.$store.dispatch('FETCH_ALL_IMAGES'); 
+                await this.$store.dispatch('FETCH_ALL_IMAGES'); 
             } catch (error) {
                 console.log(error);
             }
         },
-        components: {
-            draggable
+        computed: {
+            orderedImages(){
+                return orderBy(this.allImages, 'createdAt', 'desc')
+            },
+            ...mapGetters([
+            'allImages'
+            ])
         },
         methods: {
             async save() {
-                await this.$store.dispatch('UPDATE_PRODUCT', this.product);
                 this.upload();
             },
-            log(val){
-                console.log(val)
-            },
-            async fetchOrderedImages(images){
-                this.orderedImages = [];
-                
-                this.product.images.forEach(element => {
-                    let newImage = images.find(findImage => element.id === findImage.id);
-                    if (newImage) {
-                        this.orderedImages.push(newImage);
-                    }
-                });
-
-            },
-            navigateTo(product){
-                this.$router.push({
-                    name: 'product',
-                    params: {
-                        id: product.id
-                    }
-                })
-            },
             async upload() {
+                this.productImages = [];
+
                 try {
                     if (this.images && this.images.length) {
                             await this.$store.dispatch("ADD_IMAGES", {
                             images: clonedeep(this.images),
-                            imageData: clonedeep(this.imagesSource),
-                            id: this.product.id
+                            imageData: clonedeep(this.imagesSource)
                         })
                         this.images = [];
                         this.imagesSource = [];
@@ -212,7 +138,7 @@ import clonedeep from 'lodash.clonedeep';
             
             fileReader.addEventListener('load', () => {
                 const imageUrl = fileReader.result
-                this.imagesSource.push({src: imageUrl, id: this.product.id, active: true, alt: ''})
+                this.imagesSource.push({src: imageUrl, active: true, alt: ''})
             })
 
             const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
@@ -228,20 +154,6 @@ import clonedeep from 'lodash.clonedeep';
                 console.log(this.images)
             }
             },
-        },
-        computed: {
-            ...mapGetters([
-            'products',
-            'allImages'
-            ]),
-            dragOptions () {
-                return {
-                    animation: 200,
-                    group: 'description',
-                    disabled: false,
-                    ghostClass: 'ghost'
-                };
-            }
         }
     }
 </script>
