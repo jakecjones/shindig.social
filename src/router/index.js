@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Admin from '@/views/admin/Admin.vue'
+import Products from '@/views/admin/Products.vue'
+import Contacts from '@/views/admin/Contacts.vue'
 import EditProduct from '@/views/admin/EditProduct.vue'
 import Images from '@/views/admin/Images.vue'
 import Form from '@/views/Form.vue'
@@ -20,9 +21,9 @@ Vue.use(VueRouter)
     component: Navigation
   },
   {
-    path: '/admin',
-    name: 'admin',
-    component: Admin,
+    path: '/admin/products',
+    name: 'products',
+    component: Products,
     meta: {
       requiresAuth: true
     }
@@ -39,6 +40,14 @@ Vue.use(VueRouter)
     path: '/admin/images',
     name: 'images',
     component: Images,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/admin/contacts',
+    name: 'contacts',
+    component: Contacts,
     meta: {
       requiresAuth: true
     }

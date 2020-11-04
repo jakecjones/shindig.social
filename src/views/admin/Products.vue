@@ -1,43 +1,31 @@
 <template>
     <div class="admin">
-        <div class="side-bar">
-            <v-list class="list" rounded>
-                    <v-list-item link>
-                        Products
-                    </v-list-item>
-                    <v-list-item link>
-                        Images
-                    </v-list-item>
-                    <v-list-item link>
-                        Contacts
-                    </v-list-item>
-            </v-list>
-            <div class="content-container">
-                <div class="table-container">     
-                    <div class="toolbar">
-                        <v-btn color="primary" depressed>
-                            reorder
-                        </v-btn>
-                        <v-btn @click="createNew = true" class="ml-2" color="primary" depressed>
-                            create new
-                        </v-btn>
-                    </div>
-                    <v-data-table 
-                    :headers="headers"
-                    :items="products"
-                    >
-                        <template v-slot:item.edit="{item}">
-                            <v-btn @click="navigateTo(item)" color="primary" depressed>
-                                edit
-                            </v-btn>
-                        </template>
-                        <template v-slot:item.active="{item}">
-                            <v-switch
-                            v-model="item.active"
-                            ></v-switch>
-                        </template>
-                    </v-data-table>
+        <Navigation />
+        <div class="content-container">
+            <div class="table-container">     
+                <div class="toolbar">
+                    <v-btn color="primary" depressed>
+                        reorder
+                    </v-btn>
+                    <v-btn @click="createNew = true" class="ml-2" color="primary" depressed>
+                        create new
+                    </v-btn>
                 </div>
+                <v-data-table 
+                :headers="headers"
+                :items="products"
+                >
+                    <template v-slot:item.edit="{item}">
+                        <v-btn @click="navigateTo(item)" color="primary" depressed>
+                            edit
+                        </v-btn>
+                    </template>
+                    <template v-slot:item.active="{item}">
+                        <v-switch
+                        v-model="item.active"
+                        ></v-switch>
+                    </template>
+                </v-data-table>
             </div>
         </div>
         <v-dialog width="500px" v-model="createNew">
@@ -68,6 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import Navigation from '@/components/admin/Navigation';
 
     export default {
         data() {
@@ -93,16 +82,6 @@ import { mapGetters } from 'vuex';
                         value: 'edit',
                         align: 'right'
                     }
-                ],
-                items: [
-                    {
-                        name: 'The Boho Fence',
-                        active: false
-                    },
-                    {
-                        name: 'Chic Love',
-                        active: true
-                    }
                 ]
             }
         },
@@ -122,6 +101,9 @@ import { mapGetters } from 'vuex';
                 })
             }
         },
+        components: {
+            Navigation
+        },
         computed: {
             ...mapGetters([
             'products'
@@ -140,16 +122,6 @@ import { mapGetters } from 'vuex';
     background-color: #fafafa;
     z-index: 9;
 
-    .side-bar {
-        position: fixed;
-        width: 300px;
-        height: 100%;
-        background-color: #fff;
-        .list {
-            width: 90%;
-            margin: 1em auto;
-        }  
-    }
     .content-container {
         position: fixed;
         width: calc(100% - 300px);

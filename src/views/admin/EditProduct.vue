@@ -1,17 +1,6 @@
 <template>
     <div class="admin">
-        <div class="side-bar">
-            <v-list class="list" rounded>
-                    <v-list-item link>
-                        Products
-                    </v-list-item>
-                    <v-list-item link>
-                        Images
-                    </v-list-item>
-                    <v-list-item link>
-                        Contacts
-                    </v-list-item>
-            </v-list>
+            <Navigation />
             <div class="content-container">
                 <div class="content-container__overflow">
                     <div class="info-card info-row" flat>
@@ -88,7 +77,6 @@
                     </v-card>
                 </div>
             </div>
-        </div>
         <v-dialog width="700px" v-model="addImageDialog">
             <v-card class="pa-5">
                 <v-row>
@@ -118,6 +106,7 @@
 import { mapGetters } from 'vuex';
 import draggable from 'vuedraggable';
 import clonedeep from 'lodash.clonedeep';
+import Navigation from '@/components/admin/Navigation';
 
     export default {
         data() {
@@ -175,7 +164,8 @@ import clonedeep from 'lodash.clonedeep';
             }
         },
         components: {
-            draggable
+            draggable,
+            Navigation
         },
         methods: {
             async save() {
